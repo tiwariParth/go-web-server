@@ -6,7 +6,11 @@ services:
       context: .
       dockerfile: Dockerfile.postgres
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:5432"
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -17,15 +21,11 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "5000:5000"
+      - "${SERVER_PORT}:${SERVER_PORT}"
     depends_on:
       - postgres
-    environment:
-      - DB_HOST=postgres
-      - DB_USER=admin
-      - DB_PASSWORD=password123
-      - DB_NAME=crud_demo
-      - DB_PORT=5432
+    env_file:
+      - .env
     networks:
       - app-network
 
